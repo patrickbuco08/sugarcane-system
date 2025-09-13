@@ -1,89 +1,55 @@
-#include <Nextion.h>
+#include "config.h"
+#include <ESPmDNS.h>
+#include <WebServer.h>
+#include <WiFi.h>
 
-// Button debounce variables
-unsigned long lastDebounceTime = 0;
-const unsigned long debounceDelay = 500; // Debounce time in milliseconds
-bool isScanning = false;
+#include "nextion_lcd.h"
 
-// Text components
-NexText t0 = NexText(0, 1, "t0");  // Assuming t0 is the first text field
-NexText t1 = NexText(0, 2, "t1");  // Second text field
-NexText t2 = NexText(0, 3, "t2");  // Third text field
-
-// Button component
-NexButton button0 = NexButton(0, 1, "b0");  // Assuming button ID is b0
-
-// Nextion components list
-NexTouch *nex_listen_list[] = { &button0, NULL };
+WebServer server(80);
 
 void setup() {
-  // Initialize serial communication
   Serial.begin(115200);
-  
-  // Initialize Nextion display
-  nexInit();
-  
-  // Set up button callback
-  button0.attachPop(onScanButtonPress, &button0);
-  
-  // Initial text
-  t0.setText("Ready to scan...");
-  t1.setText("");
-  t2.setText("");
-  
-  Serial.println("System initialized. Press the scan button to begin.");
+
+  initNextion();
+
+  // Wire.begin(I2C_SDA, I2C_SCL);
+
+  // if (!sensor.begin()) {
+  //   Serial.println("Error: Sensor not found. Please check wiring.");
+  //   t0.setText("Error: Sensor not found. Please check wiring.");
+  //   while (1); // Halt if sensor not found
+  // }
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  Serial.println("[WiFi] Connecting to " + String(WIFI_SSID));
+  t0.setText(("Connecting to " + String(WIFI_SSID)).c_str());
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("Connected to WiFi");
+  t0.setText("Connected to WiFi");
+
+  if (!MDNS.begin("sugarcane")) {
+    Serial.println("Error setting up MDNS responder!");
+    while (1) {
+      delay(1000);
+    }
+  }
+  Serial.println("mDNS responder started");
+  Serial.println("You can now access http://sugarcane.local/");
+  t0.setText("You can now access http://sugarcane.local/");
+
+  // Start web server on port 80
+  server.on("/", []() { server.send(200, "text/plain", "etits"); });
+  server.begin();
+  Serial.println("Web server started on port 80");
 }
 
 void loop() {
-  // Handle Nextion events
+  server.handleClient();
   nexLoop(nex_listen_list);
-}
-
-// Button press handler
-void onScanButtonPress(void *ptr) {
-  // Debounce check
-  if ((millis() - lastDebounceTime) < debounceDelay) {
-    return; // Ignore if button was pressed too recently
-  }
-  lastDebounceTime = millis();
-  
-  // Update button text to show scanning
-  button0.setText("Scanning...");
-  
-  // Clear all text fields
-  t0.setText("");
-  t1.setText("");
-  t2.setText("");
-  
-  // Log to serial
-  Serial.println("Scan button pressed. Starting scan...");
-  
-  // Set scanning flag
-  isScanning = true;
-  
-  // Simulate scanning process with multiple text updates
-  t0.setText("Initializing scanner...");
-  Serial.println("Initializing scanner...");
-  delay(1000);
-  
-  t1.setText("Scanning in progress...");
-  Serial.println("Scanning in progress...");
-  delay(2000);
-  
-  t2.setText("Processing data...");
-  Serial.println("Processing data...");
-  delay(1000);
-  
-  // Final update
-  t0.setText("Scan complete!");
-  t1.setText("");
-  t2.setText("");
-  
-  // Reset button text
-  button0.setText("Scan");
-  
-  // Reset scanning flag
-  isScanning = false;
-  
-  Serial.println("Scan completed successfully.");
 }
