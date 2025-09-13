@@ -4,6 +4,7 @@
 #include <WiFi.h>
 
 #include "nextion_lcd.h"
+#include "as7263.h"
 
 WebServer server(80);
 
@@ -12,13 +13,7 @@ void setup() {
 
   initNextion();
 
-  // Wire.begin(I2C_SDA, I2C_SCL);
-
-  // if (!sensor.begin()) {
-  //   Serial.println("Error: Sensor not found. Please check wiring.");
-  //   t0.setText("Error: Sensor not found. Please check wiring.");
-  //   while (1); // Halt if sensor not found
-  // }
+  initAs7263();
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
