@@ -81,8 +81,8 @@ https://bocum.local/
 ## 📦 Compiling Tailwind Assets
 
 ```
-npm run dev     # for dev
-npm run build   # for production
+yarn run dev     # for dev
+yarn run build   # for production
 ```
 
 ## Get your laptop’s LAN IP address
