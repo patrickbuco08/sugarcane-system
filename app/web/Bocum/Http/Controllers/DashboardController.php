@@ -2,15 +2,15 @@
 
 namespace Bocum\Http\Controllers;
 
-use Bocum\Models\HoneySample;
+use Bocum\Models\Sample;
 use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $samples = HoneySample::latest()->paginate(1);
-        $latestId = HoneySample::latest()->value('id');
+        $samples = Sample::latest()->paginate(3);
+        $latestId = Sample::latest()->value('id');
 
         return view('dashboard.index', [
             'samples' => $samples,
@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
     public function latest(): JsonResponse
     {
-        $latest = HoneySample::latest()->first();
+        $latest = Sample::latest()->first();
 
         return response()->json([
             'success' => true,

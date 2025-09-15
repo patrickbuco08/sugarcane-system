@@ -1,250 +1,178 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Sugarcane Samples Dashboard')
 
 @section('content')
-    <div class="pt-6 flex flex-col gap-6" data-sample-id="{{ $latestId }}">
-        <div class="flex justify-end">
-            <a href="{{ route('samples.export') }}"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium rounded shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Export
-            </a>
-        </div>
-
-        <div class="bg-white shadow-md rounded-2xl p-6">
-            <div id="rename-sample" data-sample-id="{{ $samples[0]->id }}" data-sample-name="{{ $samples[0]->name }}"></div>
-            <p id="date-tested" class="text-gray-700">Date Tested: {{ $samples[0]->created_at->format('F j, Y g:i A') }}</p>
-            <div class="flex flex-row">
-                <button onclick="document.getElementById('infoModal').classList.remove('hidden')"
-                    class="flex items-center gap-2 text-sm text-gray-600 hover:text-yellow-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
-                    </svg>
-                    <span>Honey Standard Parameters</span>
-                </button>
-            </div>
-        </div>
-        <div class="bg-white shadow-md rounded-2xl p-6">
-            <h3 class="text-lg font-semibold text-gray-800">Sensor Readings</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                    @php
-                        $phValue = $samples[0]->data['sensor_readings']['ph_value'] ?? null;
-                        $phClassification = '';
-                        $phClass = 'text-honey-dark';
-                        if ($phValue !== null) {
-                            if ($phValue >= 3.7 && $phValue <= 4.5) {
-                                $phClassification = '(Within range)';
-                                $phClass = 'text-honey';
-                            } else {
-                                $phClassification = '(Outside range)';
-                            }
-                        }
-                    @endphp
-
-                    <label class="block text-sm text-gray-600 mb-1">
-                        pH Value: <span class="{{ $phClass }}">{{ $phClassification }}</span>
-                    </label>
-                    <p id="sensor-ph_value" class="w-full border rounded px-3 py-2 bg-gray-100">
-                        {{ $phValue ?? 'N/A' }}
-                    </p>
+    <div class="min-h-screen bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header -->
+            <div class="md:flex md:items-center md:justify-between mb-8">
+                <div class="flex-1 min-w-0">
+                    <h1 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Sugarcane Samples</h1>
+                    <p class="mt-1 text-sm text-gray-500">Monitor and analyze your sugarcane sample data</p>
                 </div>
-                <div>
-                    @php
-                        $ecValueRaw = $samples[0]->data['sensor_readings']['ec_value'] ?? null;
-                        $ecValue = $ecValueRaw ? $ecValueRaw / 1000 : null;
-                        $ecClassification = '';
-                        $ecClass = 'text-honey-dark';
-                        if ($ecValue !== null) {
-                            if ($ecValue < 0.8) {
-                                $ecClassification = '(Within range)';
-                                $ecClass = 'text-honey';
-                            } else {
-                                $ecClassification = '(Outside range)';
-                            }
-                        }
-                    @endphp
-
-                    <label class="block text-sm text-gray-600 mb-1">
-                        EC Value (mS/cm): <span class="{{ $ecClass }}">{{ $ecClassification }}</span>
-                    </label>
-                    <p id="sensor-ec_value" class="w-full border rounded px-3 py-2 bg-gray-100">
-                        {{ $ecValue ?? 'N/A' }}
-                    </p>
-                </div>
-                <div>
-                    @php
-                        $moisture = $samples[0]->data['sensor_readings']['moisture'] ?? null;
-                        $moistureClassification = '';
-                        $moistureClass = 'text-honey-dark';
-                        if ($moisture !== null) {
-                            if ($moisture <= 20) {
-                                $moistureClassification = '(Apis mellifera and Apis cerana)';
-                                $moistureClass = 'text-honey';
-                            } elseif ($moisture <= 23) {
-                                $moistureClassification = '(Apis dorsata and Apis breviligula)';
-                                $moistureClass = 'text-honey';
-                            } elseif ($moisture <= 24) {
-                                $moistureClassification = '(Tetragonula spp.)';
-                                $moistureClass = 'text-honey';
-                            } else {
-                                $moistureClassification = '(Outside range)';
-                            }
-                        }
-                    @endphp
-
-                    <label class="block text-sm text-gray-600 mb-1">
-                        Moisture (%): <span class="{{ $moistureClass }}">{{ $moistureClassification }}</span>
-                    </label>
-                    <p id="sensor-moisture" class="w-full border rounded px-3 py-2 bg-gray-100">
-                        {{ $moisture ?? 'N/A' }}
-                    </p>
-                </div>
-                <div>
-                    @php
-                        $specMoisture = $samples[0]->data['sensor_readings']['spectroscopy_moisture'] ?? null;
-                        $specMoistureClassification = '';
-                        $specMoistureClass = 'text-honey-dark';
-                        if ($specMoisture !== null) {
-                            if ($specMoisture <= 20) {
-                                $specMoistureClassification = '(Apis mellifera and Apis cerana)';
-                                $specMoistureClass = 'text-honey';
-                            } elseif ($specMoisture <= 23) {
-                                $specMoistureClassification = '(Apis dorsata and Apis breviligula)';
-                                $specMoistureClass = 'text-honey';
-                            } elseif ($specMoisture <= 24) {
-                                $specMoistureClassification = '(Tetragonula spp.)';
-                                $specMoistureClass = 'text-honey';
-                            } else {
-                                $specMoistureClassification = '(Outside range)';
-                            }
-                        }
-                    @endphp
-
-                    <label class="block text-sm text-gray-600 mb-1">
-                        Spectroscopy Moisture (%): <span
-                            class="{{ $specMoistureClass }}">{{ $specMoistureClassification }}</span>
-                    </label>
-                    <p id="sensor-spectroscopy_moisture" class="w-full border rounded px-3 py-2 bg-gray-100">
-                        {{ $specMoisture ?? 'N/A' }}
-                    </p>
+                <div class="mt-4 flex md:mt-0 md:ml-4">
+                    <a href="{{ route('samples.create') }}"
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-theme-primary hover:bg-theme-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-theme-accent">
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        New Sample
+                    </a>
                 </div>
             </div>
-        </div>
-        <div class="bg-white shadow-md rounded-2xl p-6">
-            <h3 class="text-lg font-semibold text-gray-800">Ambient Reading</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                    <label class="block text-sm text-gray-600 mb-1">Temperature (°C):</label>
-                    <p id="ambient-temperature" class="w-full border rounded px-3 py-2 bg-gray-100">
-                        {{ $samples[0]->data['ambient_reading']['temperature'] ?? 'N/A' }}</p>
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-600 mb-1">Relative Humidity (%):</label>
-                    <p id="ambient-humidity" class="w-full border rounded px-3 py-2 bg-gray-100">
-                        {{ $samples[0]->data['ambient_reading']['humidity'] ?? 'N/A' }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white shadow-md rounded-2xl p-6">
-            <h3 class="text-lg font-semibold text-gray-800">Absorbance Readings</h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4">
-                <div><label class="text-sm block mb-1">Violet Ch1:</label>
-                    <p id="absorbance-violet_ch1" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['violet_ch1'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Violet Ch2:</label>
-                    <p id="absorbance-violet_ch2" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['violet_ch2'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Blue:</label>
-                    <p id="absorbance-blue" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['blue'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Green Ch4:</label>
-                    <p id="absorbance-green_ch4" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['green_ch4'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Green Ch5:</label>
-                    <p id="absorbance-green_ch5" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['green_ch5'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Orange:</label>
-                    <p id="absorbance-orange" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['orange'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Red Ch7:</label>
-                    <p id="absorbance-red_ch7" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['red_ch7'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Red Ch8:</label>
-                    <p id="absorbance-red_ch8" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['red_ch8'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Clear:</label>
-                    <p id="absorbance-clear" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['clear'] ?? 'N/A' }}</p>
-                </div>
-                <div><label class="text-sm block mb-1">Near-IR:</label>
-                    <p id="absorbance-near_ir" class="w-full border px-2 py-1 rounded bg-gray-100">
-                        {{ $samples[0]->data['absorbance_readings']['near_ir'] ?? 'N/A' }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mt-6">
-        {{ $samples->links() }}
-    </div>
 
-    <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center sm:items-center z-50 hidden p-0">
-        <div
-            class="bg-white p-6 mt- md:mt-10 rounded-none shadow-lg sm:rounded-lg w-full max-w-xl sm:max-w-xl sm:w-full sm:mx-auto sm:my-auto h-full sm:h-auto overflow-y-auto sm:border border-0">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold text-yellow-700">Classes of Honey for Honey Quality Tester</h2>
-                <button onclick="document.getElementById('infoModal').classList.add('hidden')"
-                    class="text-gray-600 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            <!-- Filters and Search (placeholder for future implementation) -->
+            <div class="mb-6 bg-white shadow-sm rounded-lg p-4">
+                <div class="flex items-center flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                    <div class="flex-1">
+                        <label for="search" class="sr-only">Search</label>
+                        <div class="relative rounded-md">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="text" name="search" id="search"
+                                class="focus:ring-theme-accent focus:border-theme-accent block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                                placeholder="Search samples...">
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <select id="filter" name="filter"
+                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-theme-accent focus:border-theme-accent sm:text-sm rounded-md">
+                            <option>All Samples</option>
+                            <option>This Week</option>
+                            <option>This Month</option>
+                            <option>With Batch</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-            <table class="w-full text-left border border-gray-300 rounded-md shadow-md overflow-hidden">
-                <thead class="bg-yellow-100 text-yellow-800">
-                    <tr>
-                        <th class="p-2 border border-gray-300">Moisture Content</th>
-                        <th class="p-2 border border-gray-300">Electrical Conductivity</th>
-                        <th class="p-2 border border-gray-300">pH Value</th>
-                    </tr>
-                </thead>
-                <tbody class="text-sm text-gray-700">
-                    <tr>
-                        <td class="p-2 border border-gray-300">≤ 20% <em>(Apis mellifera and Apis cerana)</em></td>
-                        <td class="p-2 border border-gray-300">&lt; 0.8 mS/cm</td>
-                        <td class="p-2 border border-gray-300">≥ 3.7</td>
-                    </tr>
-                    <tr>
-                        <td class="p-2 border border-gray-300">≤ 23% <em>(Apis dorsata and Apis breviligula)</em></td>
-                        <td class="p-2 border border-gray-300"></td>
-                        <td class="p-2 border border-gray-300">≤ 4.5</td>
-                    </tr>
-                    <tr>
-                        <td class="p-2 border border-gray-300">≤ 24% <em>(Tetragonula spp.)</em></td>
-                        <td class="p-2 border border-gray-300"></td>
-                        <td class="p-2 border border-gray-300"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <p class="mt-4 text-sm text-red-600 italic">
-                The values of parameters are based on the following studies/articles: <br />
-                <strong>Moisture</strong> (BAFS 2022), <strong>Electrical Conductivity</strong> (BAFS 2022), and <strong>pH
-                    Values</strong> (Codex Standard for Honey [CAC], 1981).
-            </p>
+
+            <!-- Sample Cards Grid -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                @foreach ($samples as $sample)
+                    <div
+                        class="bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
+                        <div class="px-4 py-5 sm:p-6 flex-1 flex flex-col">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                    {{ $sample->label ?? 'Unlabeled Sample' }}</h3>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-theme-accent text-white">
+                                    {{ $sample->created_at->format('M d, Y') }}
+                                </span>
+                            </div>
+
+                            <!-- Key Metrics -->
+                            <div class="mt-4 grid grid-cols-2 gap-4 flex-grow">
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-sm font-medium text-gray-500">Avg Brix</p>
+                                    <p class="mt-1 text-2xl font-semibold text-gray-900">
+                                        {{ number_format($sample->avg_brix, 2) }}°</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-sm font-medium text-gray-500">Pol</p>
+                                    <p class="mt-1 text-2xl font-semibold text-gray-900">
+                                        {{ number_format($sample->pol, 2) }}°</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-sm font-medium text-gray-500">LKG/TC</p>
+                                    <p class="mt-1 text-2xl font-semibold text-gray-900">
+                                        {{ number_format($sample->lkgtc(), 2) }}</p>
+                                </div>
+                                @if ($sample->sensor_temp_c)
+                                    <div class="bg-gray-50 p-3 rounded-lg">
+                                        <p class="text-sm font-medium text-gray-500">Temp</p>
+                                        <p class="mt-1 text-2xl font-semibold text-gray-900">
+                                            {{ number_format($sample->sensor_temp_c, 1) }}°C</p>
+                                    </div>
+                                @endif
+                                @if ($sample->profit() !== null)
+                                    <div class="bg-gray-50 p-3 rounded-lg">
+                                        <p class="text-sm font-medium text-gray-500">Estimated Profit</p>
+                                        <p class="mt-1 text-2xl font-semibold text-gray-900 break-words whitespace-normal">
+                                            ₱{{ number_format($sample->profit(), 2) }}
+                                        </p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Channel Readings -->
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <h4 class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Channel Readings
+                                </h4>
+                                <div class="grid grid-cols-6 gap-1 text-xs">
+                                    <div class="bg-blue-50 p-2 rounded text-center">
+                                        <div class="font-medium">R</div>
+                                        <div class="font-semibold">{{ $sample->ch_r }}</div>
+                                    </div>
+                                    <div class="bg-blue-50 p-2 rounded text-center">
+                                        <div class="font-medium">S</div>
+                                        <div class="font-semibold">{{ $sample->ch_s }}</div>
+                                    </div>
+                                    <div class="bg-blue-50 p-2 rounded text-center">
+                                        <div class="font-medium">T</div>
+                                        <div class="font-semibold">{{ $sample->ch_t }}</div>
+                                    </div>
+                                    <div class="bg-blue-50 p-2 rounded text-center">
+                                        <div class="font-medium">U</div>
+                                        <div class="font-semibold">{{ $sample->ch_u }}</div>
+                                    </div>
+                                    <div class="bg-blue-50 p-2 rounded text-center">
+                                        <div class="font-medium">V</div>
+                                        <div class="font-semibold">{{ $sample->ch_v }}</div>
+                                    </div>
+                                    <div class="bg-blue-50 p-2 rounded text-center">
+                                        <div class="font-medium">W</div>
+                                        <div class="font-semibold">{{ $sample->ch_w }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Batch Info -->
+                            @if ($sample->harvestBatch)
+                                <div class="mt-4 pt-4 border-t border-gray-100">
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd"
+                                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <span>Batch: {{ $sample->harvestBatch->label }}</span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-sm">
+                                <span class="text-gray-500">{{ $sample->created_at->diffForHumans() }}</span>
+                                <div class="space-x-4">
+                                    <a href="{{ route('samples.edit', $sample) }}" class="font-medium text-theme-primary hover:text-theme-secondary">Edit</a>
+                                    <a href="{{ route('samples.show', $sample) }}" class="font-medium text-theme-primary hover:text-theme-secondary">View details &rarr;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6">
+                {{ $samples->links() }}
+            </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    <script type="module" src="{{ Vite::asset('resources/js/dashboard.js') }}"></script>
+    {{-- <script type="module" src="{{ Vite::asset('resources/js/dashboard.js') }}"></script> --}}
     <script type="module" src="{{ Vite::asset('resources/js/page/dashboard/index.jsx') }}"></script>
 @endpush

@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Bocum'),
+    'title' => env('APP_TITLE', 'Enter App Title'),
 
     /*
     |--------------------------------------------------------------------------

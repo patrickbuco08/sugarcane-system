@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Bocum\Http\Controllers\Auth\LoginController;
 use Bocum\Http\Controllers\HomeController;
 use Bocum\Http\Controllers\DashboardController;
-use Bocum\Http\Controllers\Api\HoneySampleController;
+use Bocum\Http\Controllers\SampleController;
+use Bocum\Http\Controllers\HarvestBatchController;
 
 // Home Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -20,6 +21,12 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/latest-honey-sample', [DashboardController::class, 'latest'])->name('latest.honey.sample');
-    Route::patch('/honey-samples/{id}/name', [HoneySampleController::class, 'updateName']);
-    Route::get('/samples/export', [HoneySampleController::class, 'export'])->name('samples.export');
+
+    // Sample Routes
+    Route::resource('samples', SampleController::class)->except(['index']);
+    Route::patch('/samples/{sample}/update-batch', [SampleController::class, 'updateBatch'])->name('samples.update-batch');
+    Route::get('/samples/export', [SampleController::class, 'export'])->name('samples.export');
+
+    // Harvest Batch Routes
+    Route::resource('harvest-batches', HarvestBatchController::class)->except(['show']);
 });

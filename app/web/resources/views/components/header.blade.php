@@ -1,11 +1,24 @@
-<header class="bg-white shadow">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-honey">
-            {{ $title ?? 'Honey Quality Tester' }}
-        </h1>
+<header class="bg-theme-primary shadow">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <h1 class="text-xl font-bold text-sugarcane-text">
+                    {{ $title ?? config('app.title') }}
+                </h1>
+                @auth
+                    <nav class="hidden md:flex items-center space-x-6">
+                        <a href="{{ route('dashboard') }}" class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('dashboard') ? 'font-semibold' : '' }}">
+                            Dashboard
+                        </a>
+                        <a href="{{ route('harvest-batches.index') }}" class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('harvest-batches.*') ? 'font-semibold' : '' }}">
+                            Harvest Batches
+                        </a>
+                    </nav>
+                @endauth
+            </div>
 
-        @auth
-            <div x-data="{ open: false }" class="relative inline-block text-left">
+            @auth
+                <div x-data="{ open: false }" class="relative inline-block text-left">
                 <div>
                     <button type="button" @click="open = !open"
                         class="inline-flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 focus:outline-none"
@@ -31,7 +44,8 @@
                         </form>
                     </div>
                 </div>
-            </div>
-        @endauth
+                </div>
+            @endauth
+        </div>
     </div>
 </header>

@@ -90,3 +90,14 @@ yarn run build   # for production
 ```
 ipconfig getifaddr en0
 ```
+
+## create seeder
+```
+php artisan make:seeder WeeklyPricesSeeder
+```
+
+## run seeder
+```
+php artisan db:seed
+php artisan db:seed --class=WeeklyPricesSeeder
+```

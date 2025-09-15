@@ -6,8 +6,12 @@
 
     <div class="min-h-screen flex items-center justify-center">
         <div class="bg-white shadow-xl rounded-2xl py-8 px-6 w-full max-w-md">
-            <div class="text-center mb-6">
-                <h1 class="text-3xl font-bold text-honey">Welcome Back</h1>
+
+            <div class="flex flex-col items-center mb-6">
+                <div class="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden mb-4">
+                    <img src="{{ asset('sugarcane-logo.png') }}" alt="Sugarcane Logo" class="w-full h-full object-cover">
+                </div>
+                <h1 class="text-3xl font-bold text-theme-primary">Welcome Back</h1>
                 <p class="text-gray-500 text-sm">Login to your account</p>
             </div>
 
@@ -32,10 +36,13 @@
                         <input type="checkbox" name="remember" class="form-checkbox text-honey rounded">
                         <span>Remember me</span>
                     </label>
+                    <a href="#" class="text-theme-primary hover:underline">
+                        Forgot Password?
+                    </a>
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-honey text-white py-2 px-4 rounded-lg hover:bg-honey-dark transition duration-200">
+                    class="w-full bg-theme-primary text-white py-2 px-4 rounded-lg hover:bg-theme-secondary transition duration-200">
                     Sign In
                 </button>
             </form>
