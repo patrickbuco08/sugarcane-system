@@ -84,3 +84,9 @@ https://bocum.local/
 npm run dev     # for dev
 npm run build   # for production
 ```
+
+## Get your laptop’s LAN IP address
+
+```
+ipconfig getifaddr en0
+```

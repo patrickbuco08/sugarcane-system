@@ -33,6 +33,7 @@ services:
       - ./:/var/www
     depends_on:
       - php 
+      # - price_prediction_api
     networks:
       - bocum_network
 
@@ -50,10 +51,17 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - bocum_network
+  
+  # Price prediction API
+  # price_prediction_api:
+  #   build: ./price_prediction_api
+  #   expose:
+  #     - "8000"
+  #   networks:
+  #     - bocum_network
 
 networks:
   bocum_network:
 
 volumes:
   db-data: 
-
