@@ -8,8 +8,15 @@
 
 WebServer server(80);
 
+// Pin number for the LED
+const int LED_PIN = 25;
+
 void setup() {
   Serial.begin(115200);
+  
+  // Initialize LED pin
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);  // Start with LED off
 
   initNextion();
 

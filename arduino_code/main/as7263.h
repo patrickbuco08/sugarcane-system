@@ -17,7 +17,7 @@ constexpr int I2C_SDA = 21;
 constexpr int I2C_SCL = 22;
 
 // Sampling configuration
-constexpr unsigned long READING_WINDOW_MS   = 10'000; // 10 seconds
+constexpr unsigned long READING_WINDOW_MS   = 3'000; // 3 seconds
 constexpr unsigned long READING_INTERVAL_MS = 100;    // 100 ms between readings (≥ integration time)
 
 // Accumulators
@@ -96,21 +96,31 @@ static inline void initAs7263() {
   Serial.println("----------------------------------");
 }
 
+// Declare external reference to LED_PIN
+extern const int LED_PIN;
+
 void onScanButtonPress(void * /*ptr*/) {
   t0.setText("Scanning...");
   resetAccumulators();
+  digitalWrite(LED_PIN, HIGH);  // Turn LED on when starting sampling
 
   const unsigned long windowStart   = millis();
   unsigned long       lastSampleMs  = 0; // immediate first sample
+  bool isSampling = false;
 
   while ((millis() - windowStart) < READING_WINDOW_MS) {
     if ((millis() - lastSampleMs) >= READING_INTERVAL_MS) {
+      digitalWrite(LED_PIN, HIGH);  // Ensure LED is on during sampling
       takeOneSample();
       lastSampleMs = millis();
+      isSampling = true;
+    } else if (isSampling) {
+      isSampling = false;
     }
     delay(5); // yield to background tasks/UI
   }
 
+  digitalWrite(LED_PIN, LOW);  // Ensure LED is off when done
   showAveragesOnT0();
   t0.setText("Start Scan");
 }

@@ -10,6 +10,9 @@
                         <a href="{{ route('dashboard') }}" class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('dashboard') ? 'font-semibold' : '' }}">
                             Dashboard
                         </a>
+                        <a href="{{ route('weekly-prices.index') }}" class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('weekly-prices.*') ? 'font-semibold' : '' }}">
+                            Weekly Prices
+                        </a>
                         <a href="{{ route('harvest-batches.index') }}" class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('harvest-batches.*') ? 'font-semibold' : '' }}">
                             Harvest Batches
                         </a>

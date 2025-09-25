@@ -6,6 +6,7 @@ use Bocum\Http\Controllers\HomeController;
 use Bocum\Http\Controllers\DashboardController;
 use Bocum\Http\Controllers\SampleController;
 use Bocum\Http\Controllers\HarvestBatchController;
+use Bocum\Http\Controllers\WeeklyPriceController;
 
 // Home Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -29,4 +30,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Harvest Batch Routes
     Route::resource('harvest-batches', HarvestBatchController::class)->except(['show']);
+
+    // Weekly Price Routes
+    Route::resource('weekly-prices', WeeklyPriceController::class)->except(['show']);
 });
