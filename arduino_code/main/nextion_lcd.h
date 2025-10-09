@@ -8,15 +8,38 @@
 
 // (page, id, name)
 NexPage page0(0, 0, "page0");
-NexText t0(0, 5, "t0");
+NexPage page1(1, 0, "settings");
 
-NexButton scanButton = NexButton(0, 1, "b0");
+NexButton scanButton = NexButton(0, 4, "b0");
+NexButton settingsButton(0, 22, "b1");
+NexButton backButton = NexButton(1, 2, "b0");
 
-NexTouch *nex_listen_list[] = {&scanButton, NULL};
+NexText appTitle = NexText(0, 3, "t0");
+NexText channelR = NexText(0, 14, "t11");
+NexText channelS = NexText(0, 15, "t12");
+NexText channelT = NexText(0, 16, "t13");
+NexText channelU = NexText(0, 17, "t14");
+NexText channelV = NexText(0, 18, "t15");
+NexText channelW = NexText(0, 19, "t16");
+
+NexText avgBrix = NexText(0, 21, "t3");
+NexText avgPol = NexText(0, 8, "t4");
+
+NexTouch *nex_listen_list[] = {&scanButton, &settingsButton, &backButton, NULL};
 
 volatile int btnTriggered = -1;
 
 extern void onScanButtonPress(void *ptr);
+
+void onSettingsPress(void *ptr) {
+  Serial.println("Navigating to Settings...");
+  page1.show();
+}
+
+void onBackPress(void *ptr) {
+  Serial.println("Navigating back to Home...");
+  page0.show();
+}
 
 void initNextion() {
 
@@ -31,7 +54,9 @@ void initNextion() {
 
   // Attach callbacks (Touch Release = Pop)
   scanButton.attachPop(onScanButtonPress, &scanButton);
+  settingsButton.attachPop(onSettingsPress, &settingsButton);
+  backButton.attachPop(onBackPress, &backButton);
 
   // Optional initial text
-  t0.setText("Ready...");
+  appTitle.setText("Ready...");
 }

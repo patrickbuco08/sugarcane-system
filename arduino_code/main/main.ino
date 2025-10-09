@@ -25,7 +25,7 @@ void setup() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   Serial.println("[WiFi] Connecting to " + String(WIFI_SSID));
-  t0.setText(("Connecting to " + String(WIFI_SSID)).c_str());
+  appTitle.setText(("Connecting to " + String(WIFI_SSID)).c_str());
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -33,7 +33,7 @@ void setup() {
   }
 
   Serial.println("Connected to WiFi");
-  t0.setText("Connected to WiFi");
+  appTitle.setText("Connected to WiFi");
 
   if (!MDNS.begin("sugarcane")) {
     Serial.println("Error setting up MDNS responder!");
@@ -43,7 +43,7 @@ void setup() {
   }
   Serial.println("mDNS responder started");
   Serial.println("You can now access http://sugarcane.local/");
-  t0.setText("You can now access http://sugarcane.local/");
+  appTitle.setText("Sugarcane Juice Analyzer");
 
   // Start web server on port 80
   server.on("/", []() { server.send(200, "text/plain", "etits"); });

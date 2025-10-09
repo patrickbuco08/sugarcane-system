@@ -24,11 +24,11 @@ volatile int btnTriggered = -1;
 
 void onScanButtonPress(void *ptr) {
   Serial.println("Scanning...");
-  t0.setText("Scanning...");
+  appTitle.setText("Scanning...");
 
   delay(3000);
 
-  t0.setText("Start Scan");
+  appTitle.setText("Start Scan");
 }
 
 void onB1(void *ptr) { btnTriggered = 1; }
@@ -54,7 +54,7 @@ void setup() {
   b3.attachPop(onB3, &b3);
 
   // Optional initial text
-  t0.setText("Ready...");
+  appTitle.setText("Ready...");
   Serial.println("Ready... tap a button.");
 }
 

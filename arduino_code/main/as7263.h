@@ -47,7 +47,7 @@ static inline void takeOneSample() {
 
 static inline void showAveragesOnT0() {
   if (readingCount == 0) {
-    t0.setText("No samples");
+    scanButton.setText("No samples");
     return;
   }
 
@@ -59,18 +59,16 @@ static inline void showAveragesOnT0() {
   const float avgW    = sumW / readingCount;
   const float avgTemp = sumTemp / readingCount;
 
-  char buf[64];
-  snprintf(buf, sizeof(buf), "R:%.2f S:%.2f T:%.2f", avgR, avgS, avgT);
-  t0.setText(buf);
-  delay(2000);
+  channelR.setText(String(avgR).c_str());
+  channelS.setText(String(avgS).c_str());
+  channelT.setText(String(avgT).c_str());
+  channelU.setText(String(avgU).c_str());
+  channelV.setText(String(avgV).c_str());
+  channelW.setText(String(avgW).c_str());
 
-  snprintf(buf, sizeof(buf), "U:%.2f V:%.2f W:%.2f", avgU, avgV, avgW);
-  t0.setText(buf);
-  delay(2000);
-
-  snprintf(buf, sizeof(buf), "Temp: %.1fC", avgTemp);
-  t0.setText(buf);
-  delay(2000);
+  String brixText = "10" + String(char(0xB0)) + "Bx";
+  avgBrix.setText(brixText.c_str());
+  avgPol.setText("12 %"); // mock for now
 }
 
 // --- Public API ------------------------------------------------------------
@@ -83,24 +81,24 @@ static inline void initAs7263() {
 
   if (!sensor.begin()) {
     Serial.println("[AS7263] Sensor not found. Check wiring.");
-    t0.setText("Error: Sensor not found. Check wiring.");
+    appTitle.setText("Error: Sensor not found. Check wiring.");
     while (true) { delay(1000); }
   }
 
   // Configure sensor (tune as needed)
   sensor.setMeasurementMode(3);   // One-shot mode (R,S,T then U,V,W)
   sensor.setGain(3);              // 64x gain
-  sensor.setIntegrationTime(50);  // 50 * 2.8ms = ~140ms
 
   Serial.println("AS726X Spectral Sensor Ready (ESP32)");
   Serial.println("----------------------------------");
 }
 
-// Declare external reference to LED_PIN
+// Declare external references
 extern const int LED_PIN;
+extern NexButton scanButton;
 
 void onScanButtonPress(void * /*ptr*/) {
-  t0.setText("Scanning...");
+  scanButton.setText("Scanning...");
   resetAccumulators();
   digitalWrite(LED_PIN, HIGH);  // Turn LED on when starting sampling
 
@@ -122,5 +120,5 @@ void onScanButtonPress(void * /*ptr*/) {
 
   digitalWrite(LED_PIN, LOW);  // Ensure LED is off when done
   showAveragesOnT0();
-  t0.setText("Start Scan");
+  scanButton.setText("Scan");
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class GraphController extends Controller
 {
+    // todo kung maraming batch sa isang linggo, i-average pa ulit para makuha ang weekly value.
     public function brixAndLkgtcGraph()
     {
         // Eager load relationships to prevent N+1 queries
@@ -44,5 +45,15 @@ class GraphController extends Controller
         })->filter(); // Remove null entries for batches without samples
 
         return response()->json($result->values());
+    }
+
+    public function weeklyPriceAndProfit()
+    {
+        // •	Graph 2 (Economic trend):
+        // •	X-axis = week
+        // •	Left Y-axis = Weekly Price (B Domestic, iisa lang per week)
+        // •	Right Y-axis = Profit for that week
+        // •	Computation = profit per batch (galing sa avg Brix + tons harvested + price + farmer’s share) → kung ma raming batch sa isang linggo, i-sum lahat to get weekly profit.
+        return "todo";
     }
 }
