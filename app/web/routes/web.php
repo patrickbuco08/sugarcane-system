@@ -8,6 +8,7 @@ use Bocum\Http\Controllers\SampleController;
 use Bocum\Http\Controllers\HarvestBatchController;
 use Bocum\Http\Controllers\WeeklyPriceController;
 use Bocum\Http\Controllers\GraphController;
+use Bocum\Http\Controllers\ForecastController;
 
 // Home Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -37,4 +38,7 @@ Route::middleware(['auth'])->group(function () {
 
     //graphs
     Route::get('/graphs/brix-and-lkgtc', [GraphController::class, 'brixAndLkgtcGraph'])->name('graphs.brix-and-lkgtc');
+
+    // forecast
+    Route::get('/forecast', [ForecastController::class, 'index'])->name('forecast');
 });
