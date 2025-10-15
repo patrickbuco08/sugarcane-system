@@ -62,15 +62,31 @@ curl -X POST http://bocum.local/api/sugarcane-samples \
   -d '{
     "avg_brix": 18.5,
     "pol": 16.2,
-    "ch_r": 1234,
-    "ch_s": 2345,
-    "ch_t": 3456,
-    "ch_u": 4567,
-    "ch_v": 5678,
-    "ch_w": 6789,
+    "ch_r": 1245,
+    "ch_s": 1150,
+    "ch_t": 1050,
+    "ch_u": 920,
+    "ch_v": 850,
+    "ch_w": 750,
     "sensor_temp_c": 25.3,
     "model_version": "v1.0",
     "coeff_hash": "abc123def456"
+  }'
+```
+
+You can test the Prediction API using the following curl command:
+
+```bash
+curl -X POST http://bocum.local/api/predictions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${BOCUM_API_TOKEN}" \
+  -d '{
+    "R": 1245,
+    "S": 1150,
+    "T": 1050,
+    "U": 920,
+    "V": 850,
+    "W": 750
   }'
 ```
 

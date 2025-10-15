@@ -45,7 +45,7 @@ model/
 1. Prepare your dataset following `sugarcane_dataset.csv`.
 2. Run the training script:
    ```bash
-   python train_sugar_model.py
+   python train_sugar_model.py <path/to/sugarcane_dataset.csv>
    ```
 3. Check console/log output for metrics and saved artifacts (if implemented in the script).
 
