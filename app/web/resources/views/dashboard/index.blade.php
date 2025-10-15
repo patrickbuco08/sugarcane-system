@@ -95,14 +95,14 @@
                                             {{ number_format($sample->sensor_temp_c, 1) }}°C</p>
                                     </div>
                                 @endif
-                                @if ($sample->profit() !== null)
+                                {{-- @if ($sample->profit() !== null)
                                     <div class="bg-gray-50 p-3 rounded-lg">
                                         <p class="text-sm font-medium text-gray-500">Estimated Profit</p>
                                         <p class="mt-1 text-2xl font-semibold text-gray-900 break-words whitespace-normal">
                                             ₱{{ number_format($sample->profit(), 2) }}
                                         </p>
                                     </div>
-                                @endif
+                                @endif --}}
                             </div>
 
                             <!-- Channel Readings -->

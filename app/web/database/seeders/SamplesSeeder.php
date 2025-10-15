@@ -13,39 +13,22 @@ class SamplesSeeder extends Seeder
      */
     public function run(): void
     {
-        $samples = [
-            [
-                'harvest_batch_id' => 1,
-                'label'            => 'Morning sample',
-                'avg_brix'         => 18.4,
-                'pol'              => 15.2,
-                'ch_r'             => 1234,
-                'ch_s'             => 1110,
-                'ch_t'             => 980,
-                'ch_u'             => 875,
-                'ch_v'             => 812,
-                'ch_w'             => 760,
-                'model_version'    => 'brix_v1_2025_08',
-                'coeff_hash'       => 'c0a1f3',
-                'created_at'       => now(),
-                'updated_at'       => now(),
-            ]
+        $sampleData = [
+            ['label' => 'Sample A1 - Morning', 'harvest_batch_id' => 1, 'avg_brix' => 17.2, 'pol' => 15.0],
+            ['label' => 'Sample A2 - Afternoon', 'harvest_batch_id' => 1, 'avg_brix' => 17.8, 'pol' => 15.2],
+            ['label' => 'Sample B1 - Morning', 'harvest_batch_id' => 2, 'avg_brix' => 18.0, 'pol' => 15.5],
+            ['label' => 'Sample B2 - Afternoon', 'harvest_batch_id' => 2, 'avg_brix' => 18.4, 'pol' => 15.8],
+            ['label' => 'Sample C1 - Morning', 'harvest_batch_id' => 3, 'avg_brix' => 18.6, 'pol' => 16.1],
+            ['label' => 'Sample C2 - Afternoon', 'harvest_batch_id' => 3, 'avg_brix' => 17.9, 'pol' => 15.6],
         ];
 
-        // Generate 10 more samples with null harvest_batch_id
-        $labels = [
-            'Field A Sample', 'Field B Sample', 'Field C Sample', 'Morning Harvest', 
-            'Afternoon Sample', 'Evening Test', 'Quality Check', 'Random Sample',
-            'Test Batch', 'Final Check'
-        ];
-
-        for ($i = 0; $i < 10; $i++) {
-            $brix = rand(150, 220) / 10; // Random brix between 15.0 and 22.0
+        $samples = [];
+        for ($i = 0; $i < 6; $i++) {
             $samples[] = [
-                'harvest_batch_id' => null,
-                'label'            => $labels[$i],
-                'avg_brix'         => $brix,
-                'pol'              => round($brix * 0.83, 2), // Rough estimate of pol from brix
+                'harvest_batch_id' => $sampleData[$i]['harvest_batch_id'],
+                'label'            => $sampleData[$i]['label'],
+                'avg_brix'         => $sampleData[$i]['avg_brix'],
+                'pol'              => $sampleData[$i]['pol'],
                 'ch_r'             => rand(1000, 1300),
                 'ch_s'             => rand(900, 1200),
                 'ch_t'             => rand(800, 1100),
@@ -54,8 +37,8 @@ class SamplesSeeder extends Seeder
                 'ch_w'             => rand(500, 800),
                 'model_version'    => 'brix_v1_2025_08',
                 'coeff_hash'       => 'd' . substr(md5(rand()), 0, 5),
-                'created_at'       => now()->subDays(rand(1, 30)),
-                'updated_at'       => now()->subDays(rand(0, 29)),
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ];
         }
 

@@ -56,10 +56,22 @@ LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 64; echo
 You can test the Honey Samples API using the following curl command:
 
 ```bash
-curl -X POST http://bocum.local/api/honey-samples \
+curl -X POST http://bocum.local/api/sugarcane-samples \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${BOCUM_API_TOKEN_ID}" \
-  -d '{"data":{"source":"curl"}}'
+  -H "Authorization: Bearer ${BOCUM_API_TOKEN}" \
+  -d '{
+    "avg_brix": 18.5,
+    "pol": 16.2,
+    "ch_r": 1234,
+    "ch_s": 2345,
+    "ch_t": 3456,
+    "ch_u": 4567,
+    "ch_v": 5678,
+    "ch_w": 6789,
+    "sensor_temp_c": 25.3,
+    "model_version": "v1.0",
+    "coeff_hash": "abc123def456"
+  }'
 ```
 
 ## Run Database Migrations

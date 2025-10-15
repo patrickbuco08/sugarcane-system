@@ -90,38 +90,53 @@
                         </dd>
                     </div>
 
+                    @if(!is_null($sample->ch_r) || !is_null($sample->ch_s) || !is_null($sample->ch_t) || 
+                        !is_null($sample->ch_u) || !is_null($sample->ch_v) || !is_null($sample->ch_w))
                     <!-- Channel Readings -->
                     <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt class="text-sm font-medium text-gray-500">Channel Readings</dt>
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+                                @if(!is_null($sample->ch_r))
                                 <div class="bg-gray-50 p-3 rounded-lg text-center hover:bg-blue-50 transition-colors" title="Channel R">
                                     <div class="text-xs font-medium text-gray-500">R</div>
                                     <div class="text-lg font-semibold">{{ $sample->ch_r }}</div>
                                 </div>
+                                @endif
+                                @if(!is_null($sample->ch_s))
                                 <div class="bg-gray-50 p-3 rounded-lg text-center hover:bg-blue-50 transition-colors" title="Channel S">
                                     <div class="text-xs font-medium text-gray-500">S</div>
                                     <div class="text-lg font-semibold">{{ $sample->ch_s }}</div>
                                 </div>
+                                @endif
+                                @if(!is_null($sample->ch_t))
                                 <div class="bg-gray-50 p-3 rounded-lg text-center hover:bg-blue-50 transition-colors" title="Channel T">
                                     <div class="text-xs font-medium text-gray-500">T</div>
                                     <div class="text-lg font-semibold">{{ $sample->ch_t }}</div>
                                 </div>
+                                @endif
+                                @if(!is_null($sample->ch_u))
                                 <div class="bg-gray-50 p-3 rounded-lg text-center hover:bg-blue-50 transition-colors" title="Channel U">
                                     <div class="text-xs font-medium text-gray-500">U</div>
                                     <div class="text-lg font-semibold">{{ $sample->ch_u }}</div>
                                 </div>
+                                @endif
+                                @if(!is_null($sample->ch_v))
                                 <div class="bg-gray-50 p-3 rounded-lg text-center hover:bg-blue-50 transition-colors" title="Channel V">
                                     <div class="text-xs font-medium text-gray-500">V</div>
                                     <div class="text-lg font-semibold">{{ $sample->ch_v }}</div>
                                 </div>
+                                @endif
+                                @if(!is_null($sample->ch_w))
                                 <div class="bg-gray-50 p-3 rounded-lg text-center hover:bg-blue-50 transition-colors" title="Channel W">
                                     <div class="text-xs font-medium text-gray-500">W</div>
                                     <div class="text-lg font-semibold">{{ $sample->ch_w }}</div>
                                 </div>
+                                @endif
                             </div>
                         </dd>
                     </div>
+                    @endif
 
                     <!-- Additional Information -->
                     <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

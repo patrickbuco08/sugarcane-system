@@ -3,6 +3,7 @@
 namespace Bocum\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Bocum\Services\ConfigurationService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +12,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register ConfigurationService as singleton for efficient caching
+        $this->app->singleton(ConfigurationService::class, function ($app) {
+            return new ConfigurationService();
+        });
     }
 
     /**
