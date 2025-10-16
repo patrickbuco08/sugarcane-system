@@ -1,0 +1,4 @@
+env('BOCUM_API_TOKEN_ID')
+clear
+php artisan tinker
+env('BOCUM_API_TOKEN_ID')

@@ -173,6 +173,9 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.latestSampleId = {{ $latestId ?? 'null' }};
+    </script>
     {{-- <script type="module" src="{{ Vite::asset('resources/js/dashboard.js') }}"></script> --}}
     <script type="module" src="{{ Vite::asset('resources/js/page/dashboard/index.jsx') }}"></script>
 @endpush

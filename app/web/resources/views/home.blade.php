@@ -4,9 +4,9 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section class="flex items-center justify-center relative overflow-hidden">
 
-        <div class="relative z-10 max-w-6xl mx-auto px-4 py-12">
+        <div class="relative z-10 max-w-6xl mx-auto py-12">
             <!-- Main Content Card -->
             <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
                 <!-- Header Accent Bar -->

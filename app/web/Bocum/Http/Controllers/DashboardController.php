@@ -20,11 +20,11 @@ class DashboardController extends Controller
 
     public function latest(): JsonResponse
     {
-        $latest = Sample::latest()->first();
-
+        $latestSample = Sample::latest()->first();
+        
         return response()->json([
-            'success' => true,
-            'sample' => $latest,
+            'id' => $latestSample ? $latestSample->id : null,
+            'label' => $latestSample ? $latestSample->label : null,
         ]);
     }
 }
