@@ -21,6 +21,10 @@
                             class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('harvest-batches.*') ? 'font-semibold' : '' }}">
                             Harvest Batches
                         </a>
+                        <a href="{{ route('maturities.index') }}"
+                            class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('maturities.*') ? 'font-semibold' : '' }}">
+                            Maturities
+                        </a>
                         <a href="{{ route('forecast.index') }}"
                             class="text-sugarcane-text hover:text-white transition-colors {{ request()->routeIs('forecast.index') ? 'font-semibold' : '' }}">
                             Forecast
@@ -102,6 +106,10 @@
                     <a href="{{ route('harvest-batches.index') }}"
                         class="text-sugarcane-text hover:text-white transition-colors px-2 py-2 rounded {{ request()->routeIs('harvest-batches.*') ? 'font-semibold bg-theme-secondary' : '' }}">
                         Harvest Batches
+                    </a>
+                    <a href="{{ route('maturities.index') }}"
+                        class="text-sugarcane-text hover:text-white transition-colors px-2 py-2 rounded {{ request()->routeIs('maturities.*') ? 'font-semibold bg-theme-secondary' : '' }}">
+                        Maturities
                     </a>
                     <a href="{{ route('forecast.index') }}"
                         class="text-sugarcane-text hover:text-white transition-colors px-2 py-2 rounded {{ request()->routeIs('forecast.index') ? 'font-semibold bg-theme-secondary' : '' }}">

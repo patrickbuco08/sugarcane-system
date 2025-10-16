@@ -66,22 +66,42 @@ class PredictionController extends Controller
         // Calculate Brix
         // Brix = Intercept + (R * Coefficient_R) + (S * Coefficient_S) + (T * Coefficient_T) + (U * Coefficient_U) + (V * Coefficient_V) + (W * Coefficient_W)
         $brix = $brixCoefficients['intercept'] +
-                ($R * $brixCoefficients['coefficients'][0]) +
-                ($S * $brixCoefficients['coefficients'][1]) +
-                ($T * $brixCoefficients['coefficients'][2]) +
-                ($U * $brixCoefficients['coefficients'][3]) +
-                ($V * $brixCoefficients['coefficients'][4]) +
-                ($W * $brixCoefficients['coefficients'][5]);
+            ($R * $brixCoefficients['coefficients'][0]) +
+            ($S * $brixCoefficients['coefficients'][1]) +
+            ($T * $brixCoefficients['coefficients'][2]) +
+            ($U * $brixCoefficients['coefficients'][3]) +
+            ($V * $brixCoefficients['coefficients'][4]) +
+            ($W * $brixCoefficients['coefficients'][5]);
 
         // Calculate Pol
         // Pol = Intercept + (R * Coefficient_R) + (S * Coefficient_S) + (T * Coefficient_T) + (U * Coefficient_U) + (V * Coefficient_V) + (W * Coefficient_W)
         $pol = $polCoefficients['intercept'] +
-               ($R * $polCoefficients['coefficients'][0]) +
-               ($S * $polCoefficients['coefficients'][1]) +
-               ($T * $polCoefficients['coefficients'][2]) +
-               ($U * $polCoefficients['coefficients'][3]) +
-               ($V * $polCoefficients['coefficients'][4]) +
-               ($W * $polCoefficients['coefficients'][5]);
+            ($R * $polCoefficients['coefficients'][0]) +
+            ($S * $polCoefficients['coefficients'][1]) +
+            ($T * $polCoefficients['coefficients'][2]) +
+            ($U * $polCoefficients['coefficients'][3]) +
+            ($V * $polCoefficients['coefficients'][4]) +
+            ($W * $polCoefficients['coefficients'][5]);
+
+        // Get configuration values
+        $overridePredictions = $this->configurationService->getConfiguration('override_predictions', false);
+
+        // Apply configuration overrides if enabled
+        if ($overridePredictions) {
+            // Override brix if configuration exists
+            if ($this->configurationService->hasConfiguration('brix')) {
+                $brix = $this->configurationService->getConfiguration('brix');
+            }
+
+            // Override pol if configuration exists
+            if ($this->configurationService->hasConfiguration('pol')) {
+                $pol = $this->configurationService->getConfiguration('pol');
+            }
+        }
+
+        $purity = round($pol / $brix, 2) * 100;
+
+
 
         // Return the predictions
         return response()->json([
@@ -89,6 +109,7 @@ class PredictionController extends Controller
             'data' => [
                 'brix' => round($brix, 2),
                 'pol' => round($pol, 2),
+                'purity' => $purity,
                 'channels' => [
                     'R' => $R,
                     'S' => $S,

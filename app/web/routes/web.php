@@ -7,6 +7,7 @@ use Bocum\Http\Controllers\DashboardController;
 use Bocum\Http\Controllers\SampleController;
 use Bocum\Http\Controllers\HarvestBatchController;
 use Bocum\Http\Controllers\WeeklyPriceController;
+use Bocum\Http\Controllers\MaturityController;
 use Bocum\Http\Controllers\GraphController;
 use Bocum\Http\Controllers\ForecastController;
 use Bocum\Http\Controllers\ConfigurationController;
@@ -36,6 +37,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Weekly Price Routes
     Route::resource('weekly-prices', WeeklyPriceController::class)->except(['show']);
+
+    // Maturity Routes
+    Route::resource('maturities', MaturityController::class);
 
     //graphs
     Route::get('/graphs/brix-and-lkgtc', [GraphController::class, 'brixAndLkgtcGraph'])->name('graphs.brix-and-lkgtc');

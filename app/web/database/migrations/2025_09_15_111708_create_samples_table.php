@@ -19,8 +19,13 @@ return new class extends Migration
                   ->constrained('harvest_batches')
                   ->nullOnDelete();                           // if batch is deleted, clear FK (or use cascade if you prefer)
 
+            // add new column, position, its either bottom or top only
+            $table->enum('position', ['bottom', 'top'])->nullable();
+
             $table->decimal('avg_brix', 6, 3);               // from AS7263+regression
             $table->decimal('pol', 6, 3)->nullable();
+
+            $table->decimal('purity', 6, 3)->nullable();
 
             $table->string('label', 120)->nullable();
 
@@ -34,7 +39,7 @@ return new class extends Migration
 
             $table->decimal('sensor_temp_c', 5, 2)->nullable();
             $table->string('model_version', 64)->nullable();  // e.g., "brix_v1_2025_08"
-            $table->string('coeff_hash', 16)->nullable();      // short hash for traceability
+            $table->string('coeff_hash', 100)->nullable();      // short hash for traceability
 
             $table->timestamps();
 

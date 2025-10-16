@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class SugarcaneSampleController extends Controller
 {
+
+    private const AVERAGE_BRIX = '14.07';
+    private const POL = '1.08';
+
     protected $configurationService;
 
     /**
@@ -50,9 +54,6 @@ class SugarcaneSampleController extends Controller
             ], 422);
         }
 
-        // Get configuration values
-        $overridePredictions = $this->configurationService->getConfiguration('override_predictions', false);
-        
         // Prepare data for sample creation
         $sampleData = [
             'avg_brix' => $request->avg_brix,
@@ -68,18 +69,7 @@ class SugarcaneSampleController extends Controller
             'coeff_hash' => $request->coeff_hash,
         ];
 
-        // Apply configuration overrides if enabled
-        if ($overridePredictions) {
-            // Override brix if configuration exists
-            if ($this->configurationService->hasConfiguration('brix')) {
-                $sampleData['avg_brix'] = $this->configurationService->getConfiguration('brix');
-            }
-
-            // Override pol if configuration exists
-            if ($this->configurationService->hasConfiguration('pol')) {
-                $sampleData['pol'] = $this->configurationService->getConfiguration('pol');
-            }
-        }
+        $sampleData['purity'] = ($sampleData['pol'] / $sampleData['avg_brix']) * 100;
 
         // Create the sample
         $sample = Sample::create($sampleData);

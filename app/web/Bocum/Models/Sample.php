@@ -11,9 +11,11 @@ class Sample extends Model
 
     protected $fillable = [
         'harvest_batch_id',
+        'position',
         'label',
         'avg_brix',
         'pol',
+        'purity',
         'ch_r',
         'ch_s',
         'ch_t',

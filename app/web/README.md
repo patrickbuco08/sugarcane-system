@@ -81,12 +81,12 @@ curl -X POST http://bocum.local/api/predictions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer ${BOCUM_API_TOKEN}" \
   -d '{
-    "R": 1245,
-    "S": 1150,
-    "T": 1050,
-    "U": 920,
-    "V": 850,
-    "W": 750
+    "R": 1385.51,
+    "S": 339.31,
+    "T": 193.41,
+    "U": 119.0,
+    "V": 82.75,
+    "W": 43.06
   }'
 ```
 

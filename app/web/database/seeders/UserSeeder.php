@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         // Create admin user
         $admin = User::factory()->create([
             'name' => 'Sugarcane Admin',
-            'email' => 'admin@cvsu.edu.ph',
+            'email' => 'sugarcane.admin@cvsu.edu.ph',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'created_at' => now(),
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
         // Create farmer user
         $farmer = User::factory()->create([
             'name' => 'Sugarcane Farmer',
-            'email' => 'sugarcane@cvsu.edu.ph',
+            'email' => 'sugarcane.farmer@cvsu.edu.ph',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'created_at' => now(),
