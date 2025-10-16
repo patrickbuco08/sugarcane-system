@@ -5,6 +5,7 @@
 
 #include "nextion_lcd.h"
 #include "as7263.h"
+#include "bocum_server.h"
 
 WebServer server(80);
 
@@ -32,7 +33,12 @@ void setup() {
     Serial.print(".");
   }
 
-  Serial.println("Connected to WiFi");
+  Serial.println("\n[WiFi] Connected!");
+  Serial.print("[WiFi] IP Address: ");
+  Serial.println(WiFi.localIP());
+  Serial.print("[WiFi] Signal Strength: ");
+  Serial.print(WiFi.RSSI());
+  Serial.println(" dBm");
   appTitle.setText("Connected to WiFi");
 
   if (!MDNS.begin("sugarcane")) {
@@ -46,7 +52,9 @@ void setup() {
   appTitle.setText("Sugarcane Juice Analyzer");
 
   // Start web server on port 80
-  server.on("/", []() { server.send(200, "text/plain", "etits"); });
+  server.on("/", HTTP_GET, handleRoot);
+  server.on("/analyze", HTTP_GET, handleAnalyzeSample);
+
   server.begin();
   Serial.println("Web server started on port 80");
 }

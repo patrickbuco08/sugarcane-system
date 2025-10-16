@@ -123,6 +123,4 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error fetching latest sample:", error);
         }
     };
-
-    setInterval(fetchLatestSample, 3000);
 });
