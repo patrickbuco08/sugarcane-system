@@ -36,7 +36,7 @@ pip install -r requirements.txt
 ```
 model/
 ├── README.md                       # This guide
-├── train_sugar_model.py            # Training script
+├── train.py            # Training script
 └── sugarcane_dataset.csv           # Sample training data template
 ```
 
@@ -45,7 +45,7 @@ model/
 1. Prepare your dataset following `sugarcane_dataset.csv`.
 2. Run the training script:
    ```bash
-   python train_sugar_model.py <path/to/sugarcane_dataset.csv>
+   python train.py <path/to/sugarcane_dataset.csv>
    ```
 3. Check console/log output for metrics and saved artifacts (if implemented in the script).
 
@@ -61,6 +61,11 @@ Brix = Intercept + (R * Coefficient_R) + (S * Coefficient_S) + (T * Coefficient_
 Pol = Intercept + (R * Coefficient_R) + (S * Coefficient_S) + (T * Coefficient_T) + (U * Coefficient_U) + (V * Coefficient_V) + (W * Coefficient_W)
 ```
 
+### compare predictions
+```
+python compare_predictions.py
+```
+
 ## 📊 Dependencies
 
 - Python 3.10
@@ -73,7 +78,7 @@ Pol = Intercept + (R * Coefficient_R) + (S * Coefficient_S) + (T * Coefficient_T
 
 ## 🔍 Tips
 
-- Ensure your CSV matches the expected columns in `train_sugar_model.py`.
+- Ensure your CSV matches the expected columns in `train.py`.
 - Use a virtual environment to avoid dependency conflicts.
 - Version your datasets and models for reproducibility.
 
