@@ -17,11 +17,11 @@ void handleAnalyzeSample() {
     
 }
 
-void handleRoot() {
-  server.send(200, "text/html", htmlPage());  // Send the HTML page content
-}
-
 String htmlPage() {
   return String(HTML_PAGE);
+}
+
+void handleRoot() {
+  server.send(200, "text/html", htmlPage());  // Send the HTML page content
 }
     

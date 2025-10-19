@@ -71,6 +71,22 @@ static inline void showAveragesOnT0() {
   avgPol.setText("12 %"); // mock for now
 }
 
+static inline ChannelAverages getChannelAverages() {
+  ChannelAverages avgs = {0};
+  
+  if (readingCount > 0) {
+    avgs.R = sumR / readingCount;
+    avgs.S = sumS / readingCount;
+    avgs.T = sumT / readingCount;
+    avgs.U = sumU / readingCount;
+    avgs.V = sumV / readingCount;
+    avgs.W = sumW / readingCount;
+    avgs.temperature = sumTemp / readingCount;
+  }
+  
+  return avgs;
+}
+
 // --- Public API ------------------------------------------------------------
 static inline void initAs7263() {
   while (!Serial) {
@@ -119,6 +135,76 @@ void onScanButtonPress(void * /*ptr*/) {
   }
 
   digitalWrite(LED_PIN, LOW);  // Ensure LED is off when done
-  showAveragesOnT0();
+  
+  if (readingCount == 0) {
+    scanButton.setText("No samples");
+    scanButton.setText("Scan");
+    return;
+  }
+  
+  // Get channel averages
+  ChannelAverages avgs = getChannelAverages();
+  
+  // Generate prediction payload and get prediction from server
+  String predictionApiPayload = getPredictionPayload(avgs);
+  PredictionResult prediction = getPrediction(predictionApiPayload);
+  
+  // Handle prediction failure first (early return)
+  if (!prediction.success) {
+    Serial.println("Prediction failed: " + prediction.errorMessage);
+    avgBrix.setText((String("--") + char(0xB0) + "Bx").c_str());
+    avgPol.setText("-- %");
+    purityText.setText("-- %");
+    scanButton.setText("Scan");
+    return;
+  }
+  
+  // Send sample data to server
+  bool sendSuccess = sendSamplePayload(
+    prediction.brix,        // avgBrix
+    prediction.pol,         // pol
+    (int)avgs.R, (int)avgs.S, (int)avgs.T,  // chR, chS, chT
+    (int)avgs.U, (int)avgs.V, (int)avgs.W,  // chU, chV, chW
+    avgs.temperature,       // sensorTempC
+    "lasso_v1.0",                // modelVersion
+    "e5d77bca"  // short hash for lasso_v1.0 model
+  );
+  
+  if (!sendSuccess) {
+    Serial.println("Failed to send sample to server");
+    avgBrix.setText((String("--") + char(0xB0) + "Bx").c_str());
+    avgPol.setText("-- %");
+    purityText.setText("-- %");
+    scanButton.setText("Scan");
+    return;
+  }
+  
+  // Update display with raw channel values (only after successful API call)
+  channelR.setText(String(avgs.R).c_str());
+  channelS.setText(String(avgs.S).c_str());
+  channelT.setText(String(avgs.T).c_str());
+  channelU.setText(String(avgs.U).c_str());
+  channelV.setText(String(avgs.V).c_str());
+  channelW.setText(String(avgs.W).c_str());
+  
+  // Update prediction results
+  String brixText = String(prediction.brix, 1) + String(char(0xB0)) + "Bx";
+  String polText = String(prediction.pol, 1) + " %";
+  String purityDisplay = String(prediction.purity, 1);
+  
+  avgBrix.setText(brixText.c_str());
+  avgPol.setText(polText.c_str());
+  purityText.setText(purityDisplay.c_str());
+  
+  Serial.println("Prediction successful - Brix: " + String(prediction.brix) + 
+                ", Pol: " + String(prediction.pol) + 
+                ", Purity: " + String(prediction.purity) + "%");
+  
+  // Reset scan button text when done
+  scanButton.setText("Scan");
+  Serial.println("Prediction successful - Brix: " + String(prediction.brix) + 
+                ", Pol: " + String(prediction.pol) + 
+                ", Purity: " + String(prediction.purity) + "%");
+  
   scanButton.setText("Scan");
 }

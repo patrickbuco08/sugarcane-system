@@ -7,10 +7,7 @@
 // WiFi Configuration
 #define WIFI_SSID "x"
 #define WIFI_PASSWORD "x"
-
-// Static IP Configuration (set USE_STATIC_IP to true to enable)
-#define USE_STATIC_IP true
-#define STATIC_IP IPAddress(192, 168, 1, 100)    // Change to your desired IP
-#define GATEWAY IPAddress(192, 168, 1, 1)        // Your router's IP
-#define SUBNET IPAddress(255, 255, 255, 0)       // Subnet mask
-#define DNS_PRIMARY IPAddress(8, 8, 8, 8)        // Google DNS (optional)
+#define BOCUM_API_BASE_URL "https://sugarcane.bucocu.net/api"
+#define BOCUM_API_SEND_SAMPLE "https://sugarcane.bucocu.net/api/sugarcane-samples"
+#define BOCUM_API_PREDICTION_URL "https://sugarcane.bucocu.net/api/predictions"
+#define BOCUM_API_TOKEN "thisIsATestToken"

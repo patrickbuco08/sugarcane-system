@@ -24,6 +24,7 @@ NexText channelW = NexText(0, 19, "t16");
 
 NexText avgBrix = NexText(0, 21, "t3");
 NexText avgPol = NexText(0, 8, "t4");
+NexText purityText = NexText(0, 23, "t17");
 
 NexTouch *nex_listen_list[] = {&scanButton, &settingsButton, &backButton, NULL};
 

@@ -1,4 +1,5 @@
 #include "config.h"
+#include "api.h"
 #include <ESPmDNS.h>
 #include <WebServer.h>
 #include <WiFi.h>
