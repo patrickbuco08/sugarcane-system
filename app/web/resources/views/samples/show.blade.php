@@ -151,6 +151,27 @@
                                     <span class="font-medium">Coefficient Hash:</span>
                                     <span class="font-mono text-gray-600">{{ $sample->coeff_hash ?? 'N/A' }}</span>
                                 </div>
+                            </div>
+                        </dd>
+                    </div>
+
+                    <!-- Delete Button -->
+                    <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Danger Zone</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <form action="{{ route('samples.destroy', $sample) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this sample? This action cannot be undone.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    Delete Sample
+                                </button>
+                            </form>
+                        </dd>
+                    </div>
+                                </div>
                                 <div>
                                     <span class="font-medium">Last Updated:</span>
                                     <span class="text-gray-600">{{ $sample->updated_at->format('M d, Y H:i:s') }}</span>

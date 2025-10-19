@@ -19,7 +19,7 @@
                         <input type="number" step="0.001" name="avg_brix" id="avg_brix" 
                                value="{{ old('avg_brix', $sample->avg_brix) }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-theme-accent focus:ring focus:ring-theme-accent focus:ring-opacity-50"
-                               required disabled>
+                               required>
                         @error('avg_brix')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -31,7 +31,7 @@
                         <input type="number" step="0.001" name="pol" id="pol" 
                                value="{{ old('pol', $sample->pol) }}"
                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-theme-accent focus:ring focus:ring-theme-accent focus:ring-opacity-50"
-                               required disabled>
+                               required>
                         @error('pol')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
