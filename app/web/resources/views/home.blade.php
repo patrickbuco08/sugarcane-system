@@ -17,7 +17,7 @@
                     <div class="flex justify-center mb-8">
                         <div class="relative">
                             <div class="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden mb-4">
-                                <img src="{{ asset('sugarcane-logo.png') }}" alt="Sugarcane Logo"
+                                <img src="{{ asset('logo.png') }}" alt="Sugarcane Logo"
                                     class="w-full h-full object-cover">
                             </div>
                             <div class="absolute -top-1 -right-1 w-8 h-8 bg-theme-accent rounded-full animate-pulse"></div>

@@ -9,7 +9,7 @@
 
             <div class="flex flex-col items-center mb-6">
                 <div class="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden mb-4">
-                    <img src="{{ asset('sugarcane-logo.png') }}" alt="Sugarcane Logo" class="w-full h-full object-cover">
+                    <img src="{{ asset('logo.png') }}" alt="Sugarcane Logo" class="w-full h-full object-cover">
                 </div>
                 <h1 class="text-3xl font-bold text-theme-primary">Welcome Back</h1>
                 <p class="text-gray-500 text-sm">Login to your account</p>

@@ -19,8 +19,8 @@ export default defineConfig({
             input: [
                 "resources/css/app.css",
                 "resources/js/app.jsx",
-                "resources/js/dashboard.js",
                 "resources/js/page/dashboard/index.jsx",
+                "resources/js/page/forecast/index.jsx"
             ],
             refresh: true,
         }),

@@ -5,7 +5,7 @@
                 <h1 class="text-xl font-bold text-sugarcane-text">
                     {{ $title ?? config('app.title') }}
                 </h1>
-                
+
                 @auth
                     <!-- Desktop Navigation -->
                     <nav class="hidden md:flex items-center space-x-6">
@@ -35,6 +35,11 @@
                                 Configurations
                             </a>
                         @endcan
+
+                        <a href="http://sugarcane.local/" rel="noopener noreferrer"
+                            class="text-sugarcane-text hover:text-white transition-colors">
+                            Scan
+                        </a>
                     </nav>
                 @endauth
             </div>
@@ -70,7 +75,8 @@
                                 </div>
                                 <form method="POST" action="{{ route('logout') }}" role="none">
                                     @csrf
-                                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                                    <button type="submit"
+                                        class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
                                         role="menuitem" tabindex="-1">Sign out</button>
                                 </form>
                             </div>
@@ -78,12 +84,17 @@
                     </div>
 
                     <!-- Mobile Menu Button -->
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-sugarcane-text hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-theme-primary rounded-md p-2">
-                        <svg x-show="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <button @click="mobileMenuOpen = !mobileMenuOpen"
+                        class="md:hidden text-sugarcane-text hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-theme-primary rounded-md p-2">
+                        <svg x-show="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
-                        <svg x-show="mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg x-show="mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
                 </div>

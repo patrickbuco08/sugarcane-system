@@ -29,29 +29,32 @@
             <div class="mb-6 bg-white shadow-sm rounded-lg p-4">
                 <div class="flex items-center flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                     <div class="flex-1">
-                        <label for="search" class="sr-only">Search</label>
-                        <div class="relative rounded-md">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                        <form action="{{ route('dashboard') }}" method="GET">
+                            <label for="search" class="sr-only">Search</label>
+                            <div class="relative rounded-md">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <input type="text" name="search" id="search" value="{{ request('search') }}"
+                                    class="focus:ring-theme-accent focus:border-theme-accent block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
+                                    placeholder="Search samples...">
+                                @if (request('search'))
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                        <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-gray-500">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                @endif
                             </div>
-                            <input type="text" name="search" id="search"
-                                class="focus:ring-theme-accent focus:border-theme-accent block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
-                                placeholder="Search samples...">
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <select id="filter" name="filter"
-                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-theme-accent focus:border-theme-accent sm:text-sm rounded-md">
-                            <option>All Samples</option>
-                            <option>This Week</option>
-                            <option>This Month</option>
-                            <option>With Batch</option>
-                        </select>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -88,21 +91,21 @@
                                     <p class="mt-1 text-2xl font-semibold text-gray-900">
                                         {{ number_format($sample->lkgtc(), 2) }}</p>
                                 </div>
-                                @if ($sample->sensor_temp_c)
+                                {{-- @if ($sample->sensor_temp_c)
                                     <div class="bg-gray-50 p-3 rounded-lg">
                                         <p class="text-sm font-medium text-gray-500">Temp</p>
                                         <p class="mt-1 text-2xl font-semibold text-gray-900">
                                             {{ number_format($sample->sensor_temp_c, 1) }}°C</p>
                                     </div>
-                                @endif
-                                {{-- @if ($sample->profit() !== null)
+                                @endif --}}
+                                @if ($sample->purity !== null)
                                     <div class="bg-gray-50 p-3 rounded-lg">
-                                        <p class="text-sm font-medium text-gray-500">Estimated Profit</p>
+                                        <p class="text-sm font-medium text-gray-500">Purity</p>
                                         <p class="mt-1 text-2xl font-semibold text-gray-900 break-words whitespace-normal">
-                                            ₱{{ number_format($sample->profit(), 2) }}
+                                            {{ number_format($sample->purity, 2) }}
                                         </p>
                                     </div>
-                                @endif --}}
+                                @endif
                             </div>
 
                             <!-- Channel Readings -->
@@ -155,8 +158,11 @@
                             <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-sm">
                                 <span class="text-gray-500">{{ $sample->created_at->diffForHumans() }}</span>
                                 <div class="space-x-4">
-                                    <a href="{{ route('samples.edit', $sample) }}" class="font-medium text-theme-primary hover:text-theme-secondary">Edit</a>
-                                    <a href="{{ route('samples.show', $sample) }}" class="font-medium text-theme-primary hover:text-theme-secondary">View details &rarr;</a>
+                                    <a href="{{ route('samples.edit', $sample) }}"
+                                        class="font-medium text-theme-primary hover:text-theme-secondary">Edit</a>
+                                    <a href="{{ route('samples.show', $sample) }}"
+                                        class="font-medium text-theme-primary hover:text-theme-secondary">View details
+                                        &rarr;</a>
                                 </div>
                             </div>
                         </div>
@@ -176,6 +182,5 @@
     <script>
         window.latestSampleId = {{ $latestId ?? 'null' }};
     </script>
-    {{-- <script type="module" src="{{ Vite::asset('resources/js/dashboard.js') }}"></script> --}}
     <script type="module" src="{{ Vite::asset('resources/js/page/dashboard/index.jsx') }}"></script>
 @endpush
