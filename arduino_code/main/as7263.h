@@ -2,32 +2,51 @@
 
 #include "AS726X.h"
 #include <Wire.h>
-
-// notes
-// AS7263 has 6 channels (R, S, T, U, V, W)
-// R = Red
-// S = Deep Red / start of NIR
-// T = NIR
-// U = NIR
-// V = NIR
-// W = NIR
+#include <struct.h>
 
 // I2C pins for ESP32 (default: SDA=21, SCL=22)
 constexpr int I2C_SDA = 21;
 constexpr int I2C_SCL = 22;
 
 // Sampling configuration
-constexpr unsigned long READING_WINDOW_MS   = 3'000; // 3 seconds
-constexpr unsigned long READING_INTERVAL_MS = 100;    // 100 ms between readings (≥ integration time)
+constexpr unsigned long READING_WINDOW_MS = 3'000; // 3 seconds
+constexpr unsigned long READING_INTERVAL_MS =
+    100; // 100 ms between readings (≥ integration time)
 
 // Accumulators
 static float sumR = 0, sumS = 0, sumT = 0, sumU = 0, sumV = 0, sumW = 0;
 static float sumTemp = 0;
-static int   readingCount = 0;
+static int readingCount = 0;
 
 static AS726X sensor;
 
-// --- Helpers ---------------------------------------------------------------
+// Declare external references
+extern const int LED_PIN;
+extern NexButton scanButton;
+
+static inline void initAs7263() {
+  while (!Serial) {
+    ; // Wait for serial port to connect
+  }
+
+  Wire.begin(I2C_SDA, I2C_SCL);
+
+  if (!sensor.begin()) {
+    Serial.println("[AS7263] Sensor not found. Check wiring.");
+    appTitle.setText("Error: Sensor not found. Check wiring.");
+    while (true) {
+      delay(1000);
+    }
+  }
+
+  // Configure sensor (tune as needed)
+  sensor.setMeasurementMode(3); // One-shot mode (R,S,T then U,V,W)
+  sensor.setGain(3);            // 64x gain
+
+  Serial.println("AS726X Spectral Sensor Ready (ESP32)");
+  Serial.println("----------------------------------");
+}
+
 static inline void resetAccumulators() {
   sumR = sumS = sumT = sumU = sumV = sumW = sumTemp = 0.0f;
   readingCount = 0;
@@ -35,12 +54,12 @@ static inline void resetAccumulators() {
 
 static inline void takeOneSample() {
   sensor.takeMeasurements();
-  sumR    += sensor.getCalibratedR();
-  sumS    += sensor.getCalibratedS();
-  sumT    += sensor.getCalibratedT();
-  sumU    += sensor.getCalibratedU();
-  sumV    += sensor.getCalibratedV();
-  sumW    += sensor.getCalibratedW();
+  sumR += sensor.getCalibratedR();
+  sumS += sensor.getCalibratedS();
+  sumT += sensor.getCalibratedT();
+  sumU += sensor.getCalibratedU();
+  sumV += sensor.getCalibratedV();
+  sumW += sensor.getCalibratedW();
   sumTemp += sensor.getTemperature();
   ++readingCount;
 }
@@ -51,12 +70,12 @@ static inline void showAveragesOnT0() {
     return;
   }
 
-  const float avgR    = sumR / readingCount;
-  const float avgS    = sumS / readingCount;
-  const float avgT    = sumT / readingCount;
-  const float avgU    = sumU / readingCount;
-  const float avgV    = sumV / readingCount;
-  const float avgW    = sumW / readingCount;
+  const float avgR = sumR / readingCount;
+  const float avgS = sumS / readingCount;
+  const float avgT = sumT / readingCount;
+  const float avgU = sumU / readingCount;
+  const float avgV = sumV / readingCount;
+  const float avgW = sumW / readingCount;
   const float avgTemp = sumTemp / readingCount;
 
   channelR.setText(String(avgR).c_str());
@@ -73,7 +92,7 @@ static inline void showAveragesOnT0() {
 
 static inline ChannelAverages getChannelAverages() {
   ChannelAverages avgs = {0};
-  
+
   if (readingCount > 0) {
     avgs.R = sumR / readingCount;
     avgs.S = sumS / readingCount;
@@ -83,128 +102,143 @@ static inline ChannelAverages getChannelAverages() {
     avgs.W = sumW / readingCount;
     avgs.temperature = sumTemp / readingCount;
   }
-  
+
   return avgs;
 }
 
-// --- Public API ------------------------------------------------------------
-static inline void initAs7263() {
-  while (!Serial) {
-    ; // Wait for serial port to connect
-  }
+static inline ScanResult performScan() {
+  ScanResult result = {0};
+  result.success = false;
 
-  Wire.begin(I2C_SDA, I2C_SCL);
-
-  if (!sensor.begin()) {
-    Serial.println("[AS7263] Sensor not found. Check wiring.");
-    appTitle.setText("Error: Sensor not found. Check wiring.");
-    while (true) { delay(1000); }
-  }
-
-  // Configure sensor (tune as needed)
-  sensor.setMeasurementMode(3);   // One-shot mode (R,S,T then U,V,W)
-  sensor.setGain(3);              // 64x gain
-
-  Serial.println("AS726X Spectral Sensor Ready (ESP32)");
-  Serial.println("----------------------------------");
-}
-
-// Declare external references
-extern const int LED_PIN;
-extern NexButton scanButton;
-
-void onScanButtonPress(void * /*ptr*/) {
-  scanButton.setText("Scanning...");
   resetAccumulators();
-  digitalWrite(LED_PIN, HIGH);  // Turn LED on when starting sampling
+  digitalWrite(LED_PIN, HIGH);
 
-  const unsigned long windowStart   = millis();
-  unsigned long       lastSampleMs  = 0; // immediate first sample
+  const unsigned long windowStart = millis();
+  unsigned long lastSampleMs = 0;
   bool isSampling = false;
+  int readingCount = 0;
 
   while ((millis() - windowStart) < READING_WINDOW_MS) {
     if ((millis() - lastSampleMs) >= READING_INTERVAL_MS) {
-      digitalWrite(LED_PIN, HIGH);  // Ensure LED is on during sampling
       takeOneSample();
       lastSampleMs = millis();
       isSampling = true;
+      readingCount++;
     } else if (isSampling) {
       isSampling = false;
     }
-    delay(5); // yield to background tasks/UI
+    delay(5);
   }
 
-  digitalWrite(LED_PIN, LOW);  // Ensure LED is off when done
-  
+  digitalWrite(LED_PIN, LOW);
+
   if (readingCount == 0) {
-    scanButton.setText("No samples");
-    scanButton.setText("Scan");
-    return;
+    result.error = "No samples collected";
+    return result;
   }
+
+  result.avgs = getChannelAverages();
+  result.success = true;
+  return result;
+}
+
+static inline FullScanResult performFullScan() {
+  FullScanResult result = {0};
   
-  // Get channel averages
-  ChannelAverages avgs = getChannelAverages();
-  
-  // Generate prediction payload and get prediction from server
-  String predictionApiPayload = getPredictionPayload(avgs);
-  PredictionResult prediction = getPrediction(predictionApiPayload);
-  
-  // Handle prediction failure first (early return)
-  if (!prediction.success) {
-    Serial.println("Prediction failed: " + prediction.errorMessage);
-    avgBrix.setText((String("--") + char(0xB0) + "Bx").c_str());
-    avgPol.setText("-- %");
-    purityText.setText("-- %");
-    scanButton.setText("Scan");
-    return;
+  // Step 1: Get sensor data
+  result.sensorData = performScan();
+  if (!result.sensorData.success) {
+    result.error = "Sensor error: " + result.sensorData.error;
+    return result;
   }
-  
-  // Send sample data to server
-  bool sendSuccess = sendSamplePayload(
-    prediction.brix,        // avgBrix
-    prediction.pol,         // pol
-    (int)avgs.R, (int)avgs.S, (int)avgs.T,  // chR, chS, chT
-    (int)avgs.U, (int)avgs.V, (int)avgs.W,  // chU, chV, chW
-    avgs.temperature,       // sensorTempC
-    "lasso_v1.0",                // modelVersion
-    "e5d77bca"  // short hash for lasso_v1.0 model
+
+  // Step 2: Get prediction
+  String payload = getPredictionPayload(result.sensorData.avgs);
+  result.prediction = getPrediction(payload);
+  if (!result.prediction.success) {
+    result.error = "Prediction error: " + result.prediction.errorMessage;
+    return result;
+  }
+
+  // Step 3: Send to server
+  result.apiSuccess = sendSamplePayload(
+    result.prediction.brix,
+    result.prediction.pol,
+    (int)result.sensorData.avgs.R, (int)result.sensorData.avgs.S, (int)result.sensorData.avgs.T,
+    (int)result.sensorData.avgs.U, (int)result.sensorData.avgs.V, (int)result.sensorData.avgs.W,
+    result.sensorData.avgs.temperature,
+    "lasso_v1.0",
+    "e5d77bca"
   );
+
+  if (!result.apiSuccess) {
+    result.error = "Failed to send data to server";
+  }
+
+  return result;
+}
+
+static inline void updateUI(const ChannelAverages& avgs, const PredictionResult& prediction) {
+  // Update channel displays
+  channelR.setText(String(avgs.R, 2).c_str());
+  channelS.setText(String(avgs.S, 2).c_str());
+  channelT.setText(String(avgs.T, 2).c_str());
+  channelU.setText(String(avgs.U, 2).c_str());
+  channelV.setText(String(avgs.V, 2).c_str());
+  channelW.setText(String(avgs.W, 2).c_str());
+
+  // Update prediction results
+  if (prediction.success) {
+    String brixText = String(prediction.brix, 1) + String(char(0xB0)) + "Bx";
+    String polText = String(prediction.pol, 1) + " %";
+    String purity = String(prediction.purity, 1) + " %";
+    
+    avgBrix.setText(brixText.c_str());
+    avgPol.setText(polText.c_str());
+    purityText.setText(purity.c_str());
+  }
+}
+
+void onScanButtonPress(void * /*ptr*/) {
+  scanButton.setText("Scanning...");
   
-  if (!sendSuccess) {
-    Serial.println("Failed to send sample to server");
+  FullScanResult result = performFullScan();
+  
+  if (!result.sensorData.success) {
+    // Handle sensor error
     avgBrix.setText((String("--") + char(0xB0) + "Bx").c_str());
     avgPol.setText("-- %");
     purityText.setText("-- %");
-    scanButton.setText("Scan");
+    scanButton.setText("Sensor Error");
+    Serial.println("Error: " + result.error);
     return;
   }
   
-  // Update display with raw channel values (only after successful API call)
-  channelR.setText(String(avgs.R).c_str());
-  channelS.setText(String(avgs.S).c_str());
-  channelT.setText(String(avgs.T).c_str());
-  channelU.setText(String(avgs.U).c_str());
-  channelV.setText(String(avgs.V).c_str());
-  channelW.setText(String(avgs.W).c_str());
+  if (!result.prediction.success) {
+    // Handle prediction error
+    avgBrix.setText((String("--") + char(0xB0) + "Bx").c_str());
+    avgPol.setText("-- %");
+    purityText.setText("-- %");
+    scanButton.setText("Prediction Error");
+    Serial.println("Error: " + result.error);
+    return;
+  }
   
-  // Update prediction results
-  String brixText = String(prediction.brix, 1) + String(char(0xB0)) + "Bx";
-  String polText = String(prediction.pol, 1) + " %";
-  String purityDisplay = String(prediction.purity, 1);
+  if (!result.apiSuccess) {
+    // Handle API error (but still show results since we have them)
+    Serial.println("Warning: " + result.error);
+    // Continue to update UI even if API failed
+  }
   
-  avgBrix.setText(brixText.c_str());
-  avgPol.setText(polText.c_str());
-  purityText.setText(purityDisplay.c_str());
+  // Update UI with results
+  updateUI(result.sensorData.avgs, result.prediction);
   
-  Serial.println("Prediction successful - Brix: " + String(prediction.brix) + 
-                ", Pol: " + String(prediction.pol) + 
-                ", Purity: " + String(prediction.purity) + "%");
-  
-  // Reset scan button text when done
+  // Reset button state
   scanButton.setText("Scan");
-  Serial.println("Prediction successful - Brix: " + String(prediction.brix) + 
-                ", Pol: " + String(prediction.pol) + 
-                ", Purity: " + String(prediction.purity) + "%");
   
-  scanButton.setText("Scan");
+  // Log success
+  Serial.println("Scan completed successfully");
+  Serial.println("- Brix: " + String(result.prediction.brix, 1) + "°Bx");
+  Serial.println("- Pol: " + String(result.prediction.pol, 1) + "%");
+  Serial.println("- Purity: " + String(result.prediction.purity, 1) + "%");
 }

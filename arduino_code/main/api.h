@@ -3,25 +3,7 @@
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include <config.h>
-
-// Struct to hold prediction results
-struct PredictionResult {
-  bool success;
-  float brix;
-  float pol;
-  float purity;
-  String errorMessage;
-};
-
-struct ChannelAverages {
-  float R;
-  float S;
-  float T;
-  float U;
-  float V;
-  float W;
-  float temperature;
-};
+#include <struct.h>
 
 /**
  * Send sample data to Bocum server
