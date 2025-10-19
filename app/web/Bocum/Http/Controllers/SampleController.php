@@ -71,7 +71,7 @@ class SampleController extends Controller
     public function show(Sample $sample)
     {
         $harvestBatches = HarvestBatch::latest()->get();
-        
+
         return view('samples.show', [
             'sample' => $sample->load('harvestBatch'),
             'harvestBatches' => $harvestBatches
@@ -106,8 +106,27 @@ class SampleController extends Controller
         if (request()->wantsJson()) {
             return response()->json(['message' => 'Export functionality will be implemented here']);
         }
-        
+
         // You might want to implement a view for non-API exports
         return response('Export functionality will be implemented here', 200);
+    }
+
+    /**
+     * Remove the specified sample from storage.
+     *
+     * @param  \Bocum\Models\Sample  $sample
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Sample $sample)
+    {
+        try {
+            $sample->delete();
+            return redirect()
+                ->route('dashboard')
+                ->with('success', 'Sample deleted successfully.');
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'Failed to delete sample: ' . $e->getMessage());
+        }
     }
 }
