@@ -106,6 +106,13 @@
                                         </p>
                                     </div>
                                 @endif
+
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <p class="text-sm font-medium text-gray-500">Sucrose Content</p>
+                                    <p class="mt-1 text-2xl font-semibold text-gray-900 break-words whitespace-normal">
+                                        {{ number_format($sample->sucroseContent(), 2) }}
+                                    </p>
+                                </div>
                             </div>
 
                             <!-- Channel Readings -->

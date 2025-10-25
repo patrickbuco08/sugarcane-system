@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sample Details: ' . ($sample->label ?? 'Untitled'))
+@section('title', 'Sample Details: ' . ($sample->label ?? 'Unlabeled'))
 
 @section('content')
     <div class="min-h-screen bg-gray-50">
@@ -69,6 +69,22 @@
                                                 {{ number_format($sample->harvestBatch->lkgTc(), 2) }}</p>
                                         </div>
                                     @endif
+
+                                    @if ($sample->purity !== null)
+                                        <div class="bg-gray-50 p-4 rounded-lg">
+                                            <p class="text-sm font-medium text-gray-500">Purity</p>
+                                            <p class="mt-1 text-2xl font-semibold">
+                                                {{ number_format($sample->purity, 2) }}</p>
+                                        </div>
+                                    @endif
+
+                                    @if ($sample->sucroseContent() !== null)
+                                        <div class="bg-gray-50 p-4 rounded-lg">
+                                            <p class="text-sm font-medium text-gray-500">Sucrose Content</p>
+                                            <p class="mt-1 text-2xl font-semibold">
+                                                {{ number_format($sample->sucroseContent(), 2) }}</p>
+                                        </div>
+                                    @endif
                                 </div>
                             </dd>
                         </div>
@@ -77,7 +93,8 @@
                         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt class="text-sm font-medium text-gray-500">Harvest Batch</dt>
                             <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                <form action="{{ route('samples.update-batch', $sample) }}" method="POST" class="max-w-md">
+                                <form action="{{ route('samples.update-batch', $sample) }}" method="POST"
+                                    class="max-w-md">
                                     @csrf
                                     @method('PATCH')
                                     <div class="flex space-x-2">

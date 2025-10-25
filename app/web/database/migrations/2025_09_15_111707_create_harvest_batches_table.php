@@ -21,7 +21,7 @@ return new class extends Migration
                   ->restrictOnDelete();                // prevent deleting a price in use
 
             $table->decimal('tons_harvested', 12, 3);  // metric tons
-            $table->decimal('recovery_coeff', 5, 4)->default(0.90); // RC (editable)
+            $table->decimal('recovery_coeff', 5, 4)->default(0.09); // RC (editable)
             $table->decimal('farmers_share', 5, 4)->default(0.69);  // share (editable)
 
             $table->timestamps();

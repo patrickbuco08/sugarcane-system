@@ -49,7 +49,7 @@ class Sample extends Model
 
     public function lkgtc(): ?float
     {
-        $recoveryCoefficient = 0.9;
+        $recoveryCoefficient = 0.09;
         return $this->avg_brix * $recoveryCoefficient;
     }
 
@@ -77,5 +77,10 @@ class Sample extends Model
         $biddingPrice = $this->harvestBatch->weeklyPrice->b_domestic;
         
         return $this->harvestBatch->tons_harvested * $lkg * $farmerShare * $biddingPrice;
+    }
+
+    public function sucroseContent(): ?float
+    {
+        return $this->avg_brix * ($this->pol / 100);
     }
 }

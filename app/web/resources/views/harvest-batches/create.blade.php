@@ -66,7 +66,7 @@
                     <div>
                         <label for="recovery_coeff" class="block text-sm font-medium text-gray-700">Recovery Coefficient</label>
                         <div class="mt-1 relative rounded-md shadow-sm">
-                            <input type="number" name="recovery_coeff" id="recovery_coeff" step="0.001" min="0" max="1" value="{{ old('recovery_coeff', 0.9) }}" class="block w-full pr-12 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-theme-accent focus:border-theme-accent sm:text-sm">
+                            <input type="number" name="recovery_coeff" id="recovery_coeff" step="0.001" min="0" max="1" value="{{ old('recovery_coeff', 0.09) }}" class="block w-full pr-12 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-theme-accent focus:border-theme-accent sm:text-sm">
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <span class="text-gray-500 sm:text-sm">0-1</span>
                             </div>
